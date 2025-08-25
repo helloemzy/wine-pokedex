@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Camera, Upload, Mic, MicOff, Square, Play } from 'lucide-react';
+import { X, Camera, Upload, Mic, Square, Play } from 'lucide-react';
 
 interface ScanModalProps {
   isOpen: boolean;

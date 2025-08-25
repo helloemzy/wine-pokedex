@@ -107,10 +107,10 @@ export default function WineSearchAndFilter({
 
     // Apply sorting
     result.sort((a, b) => {
-      let aValue: any = a[sortBy as keyof Wine];
-      let bValue: any = b[sortBy as keyof Wine];
+      let aValue: string | number = a[sortBy as keyof Wine] as string | number;
+      let bValue: string | number = b[sortBy as keyof Wine] as string | number;
 
-      if (typeof aValue === 'string') {
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
         aValue = aValue.toLowerCase();
         bValue = bValue.toLowerCase();
       }

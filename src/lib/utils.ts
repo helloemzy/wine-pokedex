@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { Wine } from "@/types/wine";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -68,7 +69,7 @@ export function generateWineId(): string {
   return `wine_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
-export function searchWines(wines: any[], searchTerm: string): any[] {
+export function searchWines(wines: Wine[], searchTerm: string): Wine[] {
   if (!searchTerm.trim()) return wines;
   
   const term = searchTerm.toLowerCase();
@@ -82,17 +83,21 @@ export function searchWines(wines: any[], searchTerm: string): any[] {
   );
 }
 
-export function sortWines(wines: any[], sortBy: string, sortOrder: 'asc' | 'desc' = 'asc'): any[] {
+export function sortWines(wines: Wine[], sortBy: string, sortOrder: 'asc' | 'desc' = 'asc'): Wine[] {
   return [...wines].sort((a, b) => {
-    let aValue = a[sortBy];
-    let bValue = b[sortBy];
+    let aValue = a[sortBy as keyof Wine];
+    let bValue = b[sortBy as keyof Wine];
     
     // Handle string comparisons
-    if (typeof aValue === 'string') {
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
       aValue = aValue.toLowerCase();
       bValue = bValue.toLowerCase();
     }
     
+    if (aValue == null && bValue == null) return 0;
+    if (aValue == null) return 1;
+    if (bValue == null) return -1;
+
     if (sortOrder === 'asc') {
       return aValue > bValue ? 1 : -1;
     } else {
@@ -101,7 +106,7 @@ export function sortWines(wines: any[], sortBy: string, sortOrder: 'asc' | 'desc
   });
 }
 
-export function filterWinesByCategory(wines: any[], category: string, value: string): any[] {
+export function filterWinesByCategory(wines: Wine[], category: string, value: string): Wine[] {
   if (!value || value === 'all') return wines;
   
   switch (category) {
@@ -120,7 +125,7 @@ export function filterWinesByCategory(wines: any[], category: string, value: str
   }
 }
 
-export function getUniqueValues(wines: any[], field: string): string[] {
+export function getUniqueValues(wines: Wine[], field: keyof Wine): string[] {
   const values = wines.map(wine => wine[field]);
-  return [...new Set(values)].filter(Boolean).sort();
+  return [...new Set(values)].filter(Boolean).sort() as string[];
 }

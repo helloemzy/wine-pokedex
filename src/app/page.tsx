@@ -16,7 +16,12 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'cards'>('cards');
   const [wines, setWines] = useState<Wine[]>([]);
   const [filteredWines, setFilteredWines] = useState<Wine[]>([]);
-  const [collectionStats, setCollectionStats] = useState<any>(null);
+  const [collectionStats, setCollectionStats] = useState<{
+    totalWines: number;
+    uniqueRegions: number;
+    uniqueGrapes: number;
+    averageRating: number;
+  } | null>(null);
   const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set());
 
   // Load wines from storage on component mount
@@ -42,14 +47,6 @@ export default function Home() {
     });
   };
 
-  const refreshData = () => {
-    const loadedWines = WineStorageService.getWines();
-    const stats = WineStorageService.getCollectionStats();
-    
-    setWines(loadedWines);
-    setFilteredWines(loadedWines);
-    setCollectionStats(stats);
-  };
 
   return (
     <div className="min-h-screen relative overflow-hidden">

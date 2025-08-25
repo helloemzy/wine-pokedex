@@ -1,4 +1,4 @@
-import type { Wine, WineCollection, CollectionBadge, TastingSession } from '@/types/wine';
+import type { Wine, CollectionBadge } from '@/types/wine';
 
 // Local Storage Keys
 const STORAGE_KEYS = {
@@ -154,7 +154,7 @@ export class WineStorageService {
   }
 
   // Calculate experience points for a wine
-  private static calculateExperiencePoints(wine: any): number {
+  private static calculateExperiencePoints(wine: Omit<Wine, 'id' | 'dateAdded' | 'experiencePoints'>): number {
     let points = 100; // Base points
     
     // Bonus points for rarity
@@ -367,7 +367,7 @@ export class WineStorageService {
         this.saveBadges(existingBadges);
         throw importError;
       }
-    } catch (error) {
+    } catch {
       return { 
         success: false, 
         message: 'Failed to import collection: Invalid JSON format' 
@@ -404,9 +404,7 @@ export const sampleWines: Omit<Wine, 'id' | 'dateAdded' | 'experiencePoints'>[] 
       color: "Garnet with purple hues"
     },
     nose: {
-      condition: "Clean",
       intensity: "Pronounced",
-      developmentLevel: "Developing",
       primaryAromas: ["blackcurrant", "cassis", "violet"],
       secondaryAromas: ["cedar", "tobacco", "graphite"],
       tertiaryAromas: []
@@ -417,8 +415,6 @@ export const sampleWines: Omit<Wine, 'id' | 'dateAdded' | 'experiencePoints'>[] 
       tannin: "Medium(+)",
       alcohol: "Medium",
       body: "Full",
-      flavorIntensity: "Pronounced",
-      flavorCharacteristics: ["dark fruit", "minerality", "spice"],
       finish: "Long"
     }
   },

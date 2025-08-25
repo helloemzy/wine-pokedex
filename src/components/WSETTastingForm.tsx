@@ -57,7 +57,7 @@ export default function WSETTastingForm({ onSave, initialData }: WSETTastingForm
     }));
   };
 
-  const updateField = (section: keyof WSETTastingNote, field: string, value: any) => {
+  const updateField = (section: keyof WSETTastingNote, field: string, value: string) => {
     setTastingNote(prev => ({
       ...prev,
       [section]: {
@@ -247,14 +247,14 @@ export default function WSETTastingForm({ onSave, initialData }: WSETTastingForm
                 {aromaType.replace('Aromas', ' Aromas')}
               </label>
               <div className="flex flex-wrap gap-2 mb-2">
-                {tastingNote.nose[aromaType as keyof typeof tastingNote.nose].map((aroma: string, index: number) => (
+                {(tastingNote.nose[aromaType as 'primaryAromas' | 'secondaryAromas' | 'tertiaryAromas'] as string[]).map((aroma: string, index: number) => (
                   <span
                     key={index}
                     className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center gap-2"
                   >
                     {aroma}
                     <button
-                      onClick={() => removeAroma(aromaType as any, index)}
+                      onClick={() => removeAroma(aromaType as 'primaryAromas' | 'secondaryAromas' | 'tertiaryAromas', index)}
                       className="text-blue-600 hover:text-blue-800"
                     >
                       ×
@@ -268,7 +268,7 @@ export default function WSETTastingForm({ onSave, initialData }: WSETTastingForm
                 placeholder="Add aroma and press Enter"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') {
-                    addAroma(aromaType as any, e.currentTarget.value);
+                    addAroma(aromaType as 'primaryAromas' | 'secondaryAromas' | 'tertiaryAromas', e.currentTarget.value);
                     e.currentTarget.value = '';
                   }
                 }}
