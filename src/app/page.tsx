@@ -5,7 +5,9 @@ import { motion } from 'framer-motion';
 import { Camera, Grid3X3, List, Plus, TrendingUp } from 'lucide-react';
 import PokedexHeader from '@/components/PokedexHeader';
 import WineCard from '@/components/WineCard';
-import WineTradingCard from '@/components/WineTradingCard';
+// import WineTradingCard from '@/components/WineTradingCard';
+import EnhancedWineTradingCard from '@/components/EnhancedWineTradingCard';
+import WineTypeGrid from '@/components/WineTypeGrid';
 import ScanModal from '@/components/ScanModal';
 import WineSearchAndFilter from '@/components/WineSearchAndFilter';
 import { WineStorageService, initializeSampleData } from '@/lib/wineStorage';
@@ -13,7 +15,7 @@ import type { Wine } from '@/types/wine';
 
 export default function Home() {
   const [isScanning, setIsScanning] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'cards'>('cards');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'cards' | 'types'>('cards');
   const [wines, setWines] = useState<Wine[]>([]);
   const [filteredWines, setFilteredWines] = useState<Wine[]>([]);
   const [collectionStats, setCollectionStats] = useState<{
@@ -93,6 +95,13 @@ export default function Home() {
             <div className="flex gap-3 items-center">
               <div className="flex bg-gray-100 rounded-full p-1">
                 <button
+                  onClick={() => setViewMode('types')}
+                  className={`p-2 rounded-full transition-all ${viewMode === 'types' ? 'bg-red-500 text-white' : 'text-gray-600 hover:text-red-500'}`}
+                  title="Pokemon-Style Types"
+                >
+                  🍷
+                </button>
+                <button
                   onClick={() => setViewMode('cards')}
                   className={`p-2 rounded-full transition-all ${viewMode === 'cards' ? 'bg-blue-500 text-white' : 'text-gray-600 hover:text-blue-500'}`}
                   title="Trading Cards"
@@ -154,36 +163,40 @@ export default function Home() {
         )}
 
         {/* Wine Collection */}
-        <motion.div 
-          className={
-            viewMode === 'cards' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8' :
-            viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' : 
-            'space-y-4'
-          }
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          {filteredWines.map((wine, index) => (
-            <motion.div
-              key={wine.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * index }}
-            >
-              {viewMode === 'cards' ? (
-                <WineTradingCard 
-                  wine={wine}
-                  isFlipped={flippedCards.has(wine.id)}
-                  onFlip={() => handleCardFlip(wine.id)}
-                  size="medium"
-                />
-              ) : (
-                <WineCard wine={wine} viewMode={viewMode} />
-              )}
-            </motion.div>
-          ))}
-        </motion.div>
+        {viewMode === 'types' ? (
+          <WineTypeGrid wines={filteredWines} />
+        ) : (
+          <motion.div 
+            className={
+              viewMode === 'cards' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8' :
+              viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' : 
+              'space-y-4'
+            }
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            {filteredWines.map((wine, index) => (
+              <motion.div
+                key={wine.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * index }}
+              >
+                {viewMode === 'cards' ? (
+                  <EnhancedWineTradingCard 
+                    wine={wine}
+                    isFlipped={flippedCards.has(wine.id)}
+                    onFlip={() => handleCardFlip(wine.id)}
+                    size="medium"
+                  />
+                ) : (
+                  <WineCard wine={wine} viewMode={viewMode} />
+                )}
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
 
         {filteredWines.length === 0 && wines.length > 0 && (
           <motion.div 

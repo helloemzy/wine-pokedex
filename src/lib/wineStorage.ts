@@ -1,4 +1,5 @@
 import type { Wine, CollectionBadge } from '@/types/wine';
+import { determineRarity } from './wineClassification';
 
 // Local Storage Keys
 const STORAGE_KEYS = {
@@ -38,11 +39,18 @@ export class WineStorageService {
   // Add a new wine
   static addWine(wine: Omit<Wine, 'id' | 'dateAdded' | 'experiencePoints'>): Wine {
     const wines = this.getWines();
-    const newWine: Wine = {
+    const baseWine = {
       ...wine,
       id: Date.now(),
       dateAdded: new Date(),
       experiencePoints: this.calculateExperiencePoints(wine)
+    };
+    
+    // Auto-determine rarity if not set
+    const rarity = wine.rarity || determineRarity(baseWine as Wine);
+    const newWine: Wine = {
+      ...baseWine,
+      rarity
     };
     
     wines.push(newWine);
